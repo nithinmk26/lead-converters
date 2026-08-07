@@ -1,7 +1,7 @@
 /**
  * Secure Vault Storage Engine
  * Features: Obfuscated Storage, XOR/Base64 Encryption, and Cryptographic Tamper Verification.
- * Prevents attackers from viewing plain JSON or modifying LocalStorage data.
+ * Environment Aware: Dummy leads load only in DEV mode (`import.meta.env.DEV`). Production starts clean.
  */
 
 const VAULT_STORAGE_KEY = '_mw_app_vault_secure';
@@ -107,23 +107,26 @@ export const decryptPayload = (rawVaultString) => {
 export const getLeads = () => {
   try {
     const rawVault = localStorage.getItem(VAULT_STORAGE_KEY);
+    // In DEV mode (npm run dev), seed initial dummy leads. In PRODUCTION (GitHub Pages build), start clean []
+    const defaultLeads = import.meta.env.DEV ? INITIAL_LEADS : [];
+
     if (!rawVault) {
-      const encrypted = encryptPayload(INITIAL_LEADS);
+      const encrypted = encryptPayload(defaultLeads);
       localStorage.setItem(VAULT_STORAGE_KEY, encrypted);
-      return INITIAL_LEADS;
+      return defaultLeads;
     }
     
     const decrypted = decryptPayload(rawVault);
     if (decrypted && Array.isArray(decrypted)) {
       return decrypted;
     } else {
-      const encrypted = encryptPayload(INITIAL_LEADS);
+      const encrypted = encryptPayload(defaultLeads);
       localStorage.setItem(VAULT_STORAGE_KEY, encrypted);
-      return INITIAL_LEADS;
+      return defaultLeads;
     }
   } catch (error) {
     console.error('Failed to access secure vault:', error);
-    return INITIAL_LEADS;
+    return import.meta.env.DEV ? INITIAL_LEADS : [];
   }
 };
 
