@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
 import { 
-  Zap, 
   ShieldCheck, 
   Lock, 
   LogOut,
@@ -39,13 +38,17 @@ export const Navbar = ({ onOpenAddModal, onLeadsImported, onLogout, totalCount }
   };
 
   return (
-    <nav className="sticky top-0 z-50 glass-panel border-b px-6 py-4">
+    <nav className="sticky top-0 z-50 glass-panel border-b px-6 py-3">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         
-        {/* Brand Logo */}
+        {/* Brand Logo with Responsive Malnad Webs Badge */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-amber-500 flex items-center justify-center text-slate-950 font-black">
-            <Zap className="w-6 h-6 fill-slate-950 text-slate-950" />
+          <div className="navbar-logo-badge">
+            <img 
+              src="./malnad_webs_logo.png" 
+              alt="Malnad Webs Logo" 
+              className="navbar-logo-img"
+            />
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -58,7 +61,7 @@ export const Navbar = ({ onOpenAddModal, onLeadsImported, onLogout, totalCount }
               </span>
             </div>
             <p className="text-11px text-gray-400 hidden sm-block">
-              Malnad Webs Inspired Lead Publishing Suite
+              Malnad Webs Authorized Lead Publishing Suite
             </p>
           </div>
         </div>

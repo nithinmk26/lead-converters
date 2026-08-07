@@ -36,8 +36,16 @@ export const LoginLandingPage = ({ onLoginSuccess }) => {
 
       <div className="login-card-wrapper">
         
-        {/* Brand Header */}
-        <div className="login-header">
+        {/* Brand Header with Official Malnad Webs Logo */}
+        <div className="login-header flex flex-col items-center">
+          <div className="login-logo-badge">
+            <img 
+              src="./malnad_webs_logo.png" 
+              alt="Malnad Webs Logo" 
+              className="navbar-logo-img"
+            />
+          </div>
+
           <span className="badge badge-todo mb-2">
             <ShieldCheck className="w-4 h-4 text-amber-400 inline" />
             &nbsp;SECURE ACCESS GATEWAY
