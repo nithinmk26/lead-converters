@@ -186,6 +186,21 @@ export const deleteLead = (leadId) => {
   return updatedLeads;
 };
 
+export const deleteLeadsByStatus = (status) => {
+  const leads = getLeads();
+  const updatedLeads = leads.filter((lead) => lead.status !== status);
+  saveLeads(updatedLeads);
+  return updatedLeads;
+};
+
+export const deleteMultipleLeads = (leadIds) => {
+  const leads = getLeads();
+  const leadIdSet = new Set(leadIds);
+  const updatedLeads = leads.filter((lead) => !leadIdSet.has(lead.id));
+  saveLeads(updatedLeads);
+  return updatedLeads;
+};
+
 export const exportDatabaseJSON = () => {
   const leads = getLeads();
   const encryptedFileContent = encryptPayload(leads);

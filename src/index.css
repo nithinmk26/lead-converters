@@ -231,6 +231,19 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 0 40px rgba(37, 211, 102, 0.5);
 }
 
+.btn-danger {
+  background: rgba(244, 63, 94, 0.15);
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  color: #fecdd3;
+}
+
+.btn-danger:hover {
+  background: rgba(244, 63, 94, 0.3);
+  border-color: rgba(244, 63, 94, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(244, 63, 94, 0.35);
+}
+
 /* Glass Inputs */
 .glass-input {
   width: 100%;

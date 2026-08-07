@@ -4,7 +4,9 @@ import {
   getLeads, 
   addLead, 
   markLeadCompleted, 
-  deleteLead 
+  deleteLead,
+  deleteLeadsByStatus,
+  deleteMultipleLeads
 } from './services/db';
 
 import { isAuthenticated, logoutUser } from './services/auth';
@@ -87,6 +89,19 @@ export default function App() {
     }
   };
 
+  const handleDeleteSectionLeads = (status) => {
+    const sectionName = status === 'todo' ? 'To-Do' : 'Completed';
+    const updated = deleteLeadsByStatus(status);
+    setLeads(updated);
+    setToast({ message: `All ${sectionName} leads deleted from database.`, type: 'success' });
+  };
+
+  const handleDeleteMultipleLeads = (leadIds) => {
+    const updated = deleteMultipleLeads(leadIds);
+    setLeads(updated);
+    setToast({ message: `${leadIds.length} lead(s) deleted from database.`, type: 'success' });
+  };
+
   const handleLeadsImported = (importedLeads) => {
     setLeads(importedLeads);
     setToast({ message: 'Database backup imported successfully!', type: 'success' });
@@ -159,6 +174,8 @@ export default function App() {
           leads={leads}
           onOpenSendMessage={(lead) => setSelectedLeadForMessaging(lead)}
           onDeleteLead={handleDeleteLead}
+          onDeleteSectionLeads={handleDeleteSectionLeads}
+          onDeleteMultipleLeads={handleDeleteMultipleLeads}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
         />
@@ -184,6 +201,7 @@ export default function App() {
         lead={selectedLeadForMessaging}
         onClose={() => setSelectedLeadForMessaging(null)}
         onSendComplete={handleSendComplete}
+        onDeleteLead={handleDeleteLead}
       />
 
       {/* Toast Feedback */}

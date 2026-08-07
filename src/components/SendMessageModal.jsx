@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { X, Send, MessageSquare, ExternalLink, Copy, Check, Link } from 'lucide-react';
+import { X, Send, MessageSquare, ExternalLink, Copy, Check, Link, Trash2 } from 'lucide-react';
 import { BrochurePreview } from './BrochurePreview';
 import { generatePreconstructedMessage, createWhatsAppUrl, BROCHURES } from '../services/whatsapp';
 
-export const SendMessageModal = ({ isOpen, onClose, lead, onSendComplete }) => {
+export const SendMessageModal = ({ isOpen, onClose, lead, onSendComplete, onDeleteLead }) => {
   const [selectedTheme, setSelectedTheme] = useState('nature');
   const [driveUrl, setDriveUrl] = useState('');
   const [message, setMessage] = useState('');
@@ -40,6 +40,13 @@ export const SendMessageModal = ({ isOpen, onClose, lead, onSendComplete }) => {
     navigator.clipboard.writeText(message);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleDelete = () => {
+    if (onDeleteLead) {
+      onDeleteLead(lead.id);
+      onClose();
+    }
   };
 
   return (
@@ -117,12 +124,19 @@ export const SendMessageModal = ({ isOpen, onClose, lead, onSendComplete }) => {
           </div>
 
           {/* Action Buttons */}
-          <div className="pt-3 flex items-center justify-between border-t">
-            <div className="text-11px text-gray-400">
-              Selected Theme: <span className="text-amber-400 font-bold uppercase">{selectedTheme}</span>
-            </div>
+          <div className="pt-3 flex items-center justify-between border-t gap-2 flex-wrap">
+            {onDeleteLead && (
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="btn btn-danger text-xs flex items-center gap-1.5 py-2 px-3"
+              >
+                <Trash2 className="w-3-5 h-3-5 text-rose-400" />
+                <span>Delete Lead</span>
+              </button>
+            )}
 
-            <div className="flex gap-3 ml-auto">
+            <div className="flex gap-3 ml-auto items-center">
               <button
                 type="button"
                 onClick={onClose}
