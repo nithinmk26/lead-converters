@@ -1,6 +1,6 @@
 /**
  * WhatsApp & Messaging Service
- * Formats numbers and generates WhatsApp web deep links with exact pre-constructed messages, image previews, and Google Drive brochure links.
+ * Formats numbers and generates WhatsApp web deep links with exact pre-constructed messages and Google Drive brochure links.
  */
 
 export const BROCHURES = {
@@ -43,20 +43,18 @@ export const generatePreconstructedMessage = (lead, brochureThemeKey = 'nature',
   const brochure = BROCHURES[brochureThemeKey] || BROCHURES.nature;
   const brochureLink = (customDriveUrl && customDriveUrl.trim()) ? customDriveUrl.trim() : brochure.driveUrl;
 
-  // Public direct image URL for WhatsApp rich visual card preview
-  const directImageUrl = `${window.location.origin}/brochure/${brochure.filename}`;
-
   let msg = `Hello ${lead.name},\n\n`;
   msg += `Thank you for reaching out to us from *${lead.location}*!\n\n`;
   msg += `We are excited to share our official business brochure with you:\n\n`;
   msg += `Brochure:\n${brochureLink}\n\n`;
-  msg += `Image Preview:\n${directImageUrl}\n\n`;
   msg += `Location:\nhttps://maps.app.goo.gl/ao21NKrgeuDVvdsTA\n\n`;
   msg += `Website:\nhttps://malnadwebs.online\n\n`;
   if (customNote) {
     msg += `Note:\n${customNote}\n\n`;
   }
-  msg += `Feel free to reply here if you have any questions or would like to schedule a call! Best regards.`;
+  msg += `Feel free to reply here if you have any questions or would like to schedule a call!\n\n`;
+  msg += `Best regards\n`;
+  msg += `Malnad Webs`;
 
   return msg;
 };
