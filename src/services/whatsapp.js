@@ -41,32 +41,31 @@ export const BROCHURES = {
 
 export const generatePreconstructedMessage = (lead, brochureThemeKey = 'nature', customNote = '', customDriveUrl = '') => {
   const brochure = BROCHURES[brochureThemeKey] || BROCHURES.nature;
-  const locationUrl = (lead.mapsUrl && lead.mapsUrl.trim()) ? lead.mapsUrl.trim() : 'https://maps.app.goo.gl/ao21NKrgeuDVvdsTA';
   const brochureLink = (customDriveUrl && customDriveUrl.trim()) ? customDriveUrl.trim() : brochure.driveUrl;
-  
+
   let msg = `Hello ${lead.name},\n\n`;
   msg += `Thank you for reaching out to us from *${lead.location}*!\n\n`;
   msg += `We are excited to share our official business brochure with you:\n\n`;
   msg += `Brochure:\n${brochureLink}\n\n`;
-  msg += `Location:\n${locationUrl}\n\n`;
+  msg += `Location:\nhttps://maps.app.goo.gl/ao21NKrgeuDVvdsTA\n\n`;
   msg += `Website:\nhttps://malnadwebs.online\n\n`;
   if (customNote) {
     msg += `Note:\n${customNote}\n\n`;
   }
   msg += `Feel free to reply here if you have any questions or would like to schedule a call! Best regards.`;
-  
+
   return msg;
 };
 
 export const createWhatsAppUrl = (phone, message) => {
   // Clean phone number (keep numbers only)
   let cleanPhone = phone.replace(/[^0-9]/g, '');
-  
+
   // Default to India country code 91 if 10 digits
   if (cleanPhone.length === 10) {
-    cleanPhone = '91' + cleanPhone;
+    cleanPhone = '+91' + cleanPhone;
   }
-  
+
   const encodedMsg = encodeURIComponent(message);
   return `https://wa.me/${cleanPhone}?text=${encodedMsg}`;
 };

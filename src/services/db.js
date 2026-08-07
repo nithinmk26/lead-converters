@@ -13,7 +13,7 @@ const INITIAL_LEADS = [
     name: 'Rohan Sharma',
     phone: '+91 98765 43210',
     location: 'Bangalore, Karnataka',
-    mapsUrl: 'https://maps.app.goo.gl/ao21NKrgeuDVvdsTA',
+    mapsUrl: '',
     status: 'todo',
     createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
     notes: 'Interested in website design & SEO package'
@@ -33,7 +33,7 @@ const INITIAL_LEADS = [
     name: 'Vikram Gowda',
     phone: '+91 99001 12233',
     location: 'Shivamogga, Karnataka',
-    mapsUrl: 'https://maps.app.goo.gl/ao21NKrgeuDVvdsTA',
+    mapsUrl: '',
     status: 'completed',
     createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
     sentAt: new Date(Date.now() - 3600000 * 12).toISOString(),
@@ -107,7 +107,6 @@ export const decryptPayload = (rawVaultString) => {
 export const getLeads = () => {
   try {
     const rawVault = localStorage.getItem(VAULT_STORAGE_KEY);
-    // In DEV mode (npm run dev), seed initial dummy leads. In PRODUCTION (GitHub Pages build), start clean []
     const defaultLeads = import.meta.env.DEV ? INITIAL_LEADS : [];
 
     if (!rawVault) {
@@ -146,7 +145,7 @@ export const addLead = (leadData) => {
     name: leadData.name.trim(),
     phone: leadData.phone.trim(),
     location: leadData.location.trim(),
-    mapsUrl: leadData.mapsUrl ? leadData.mapsUrl.trim() : 'https://maps.app.goo.gl/ao21NKrgeuDVvdsTA',
+    mapsUrl: (leadData.mapsUrl && leadData.mapsUrl.trim()) ? leadData.mapsUrl.trim() : '',
     status: 'todo',
     createdAt: new Date().toISOString(),
     notes: leadData.notes || ''
