@@ -1,7 +1,8 @@
 /**
  * Secure Vault Storage Engine
  * Features: Obfuscated Storage, XOR/Base64 Encryption, and Cryptographic Tamper Verification.
- * Environment Aware: Dummy leads load only in DEV mode (`import.meta.env.DEV`). Production starts clean.
+ * Environment Aware: Sample dummy leads exist ONLY in DEV mode (`npm run dev`).
+ * Production builds (GitHub Pages) automatically strip dummy leads.
  */
 
 const VAULT_STORAGE_KEY = '_mw_app_vault_secure';
@@ -107,6 +108,7 @@ export const decryptPayload = (rawVaultString) => {
 export const getLeads = () => {
   try {
     const rawVault = localStorage.getItem(VAULT_STORAGE_KEY);
+    // In DEV mode (npm run dev), seed initial sample leads. In PRODUCTION (GitHub Pages), start clean []
     const defaultLeads = import.meta.env.DEV ? INITIAL_LEADS : [];
 
     if (!rawVault) {
@@ -117,6 +119,10 @@ export const getLeads = () => {
     
     const decrypted = decryptPayload(rawVault);
     if (decrypted && Array.isArray(decrypted)) {
+      // In production builds (GitHub Pages), strip out any dummy seed leads ('lead-101', 'lead-102', 'lead-103')
+      if (!import.meta.env.DEV) {
+        return decrypted.filter((lead) => !['lead-101', 'lead-102', 'lead-103'].includes(lead.id));
+      }
       return decrypted;
     } else {
       const encrypted = encryptPayload(defaultLeads);
