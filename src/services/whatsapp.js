@@ -60,12 +60,18 @@ export const generatePreconstructedMessage = (lead, brochureThemeKey = 'nature',
 };
 
 export const createWhatsAppUrl = (phone, message) => {
+  const phoneValue = String(phone || '');
+
   // Clean phone number (keep numbers only)
-  let cleanPhone = phone.replace(/[^0-9]/g, '');
+  let cleanPhone = phoneValue.replace(/[^0-9]/g, '');
 
   // Default to India country code 91 if 10 digits
   if (cleanPhone.length === 10) {
     cleanPhone = '+91' + cleanPhone;
+  }
+
+  if (!cleanPhone) {
+    throw new Error('Invalid phone number provided for WhatsApp message.');
   }
 
   const encodedMsg = encodeURIComponent(message);

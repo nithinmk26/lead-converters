@@ -8,15 +8,15 @@ export const SendMessageModal = ({ isOpen, onClose, lead, onSendComplete, onDele
   const [driveUrl, setDriveUrl] = useState('');
   const [message, setMessage] = useState('');
   const [copied, setCopied] = useState(false);
+  const [sendError, setSendError] = useState('');
+  const [isSending, setIsSending] = useState(false);
 
-  // Sync initial drive URL when theme changes
   useEffect(() => {
     if (BROCHURES[selectedTheme]) {
       setDriveUrl(BROCHURES[selectedTheme].driveUrl);
     }
   }, [selectedTheme]);
 
-  // Update preconstructed message whenever lead, theme, or driveUrl changes
   useEffect(() => {
     if (lead) {
       const generated = generatePreconstructedMessage(lead, selectedTheme, '', driveUrl);
@@ -26,14 +26,21 @@ export const SendMessageModal = ({ isOpen, onClose, lead, onSendComplete, onDele
 
   if (!isOpen || !lead) return null;
 
-  const handleSendWhatsApp = () => {
-    // 1. Open WhatsApp Web targeted directly to lead.phone (without downloading local files)
-    const waUrl = createWhatsAppUrl(lead.phone, message);
-    window.open(waUrl, '_blank');
+  const handleSendWhatsApp = async () => {
+    setSendError('');
+    setIsSending(true);
 
-    // 2. Mark complete & close modal
-    onSendComplete(lead.id, selectedTheme);
-    onClose();
+    try {
+      const waUrl = createWhatsAppUrl(lead.phone, message);
+      window.open(waUrl, '_blank');
+
+      await onSendComplete(lead.id, selectedTheme);
+      onClose();
+    } catch (error) {
+      setSendError(error?.message || 'Unable to mark lead completed. Please try again.');
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const handleCopyMessage = () => {
@@ -55,7 +62,6 @@ export const SendMessageModal = ({ isOpen, onClose, lead, onSendComplete, onDele
         className="modal-content max-w-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="flex justify-between items-center pb-4 mb-4 border-b">
           <div className="flex items-center gap-3">
             <div className="p-2-5 rounded-xl bg-emerald-400 text-slate-950">
@@ -74,19 +80,18 @@ export const SendMessageModal = ({ isOpen, onClose, lead, onSendComplete, onDele
           <button
             onClick={onClose}
             className="p-2 text-gray-400 hover:text-white rounded-full"
+            disabled={isSending}
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         <div className="space-y-5">
-          {/* Brochure Theme Selector & Preview */}
           <BrochurePreview 
             selectedTheme={selectedTheme} 
             onSelectTheme={setSelectedTheme} 
           />
 
-          {/* Google Drive Brochure Link Field */}
           <div>
             <label className="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1-5 flex items-center gap-1-5">
               <Link className="w-3-5 h-3-5 text-amber-400" /> Brochure View/Download Drive Link
@@ -100,7 +105,6 @@ export const SendMessageModal = ({ isOpen, onClose, lead, onSendComplete, onDele
             />
           </div>
 
-          {/* Pre-constructed Message Editor */}
           <div>
             <div className="flex justify-between items-center mb-1-5">
               <label className="block text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1-5">
@@ -123,8 +127,11 @@ export const SendMessageModal = ({ isOpen, onClose, lead, onSendComplete, onDele
             />
           </div>
 
-          {/* Action Buttons */}
-          <div className="pt-3 flex items-center justify-between border-t gap-2 flex-wrap">
+          {sendError && (
+            <div className="text-rose-400 text-xs">{sendError}</div>
+          )}
+
+          <div className="pt-3 flex items-center justify-between border-t gap-3 flex-wrap">
             {onDeleteLead && (
               <button
                 type="button"
@@ -141,6 +148,7 @@ export const SendMessageModal = ({ isOpen, onClose, lead, onSendComplete, onDele
                 type="button"
                 onClick={onClose}
                 className="btn btn-secondary"
+                disabled={isSending}
               >
                 Cancel
               </button>
@@ -148,12 +156,14 @@ export const SendMessageModal = ({ isOpen, onClose, lead, onSendComplete, onDele
                 type="button"
                 onClick={handleSendWhatsApp}
                 className="btn btn-whatsapp"
+                disabled={isSending}
               >
                 <Send className="w-4 h-4" />
-                <span>Send WhatsApp to {lead.phone}</span>
+                <span>{isSending ? 'Sending...' : `Send WhatsApp to ${lead.phone}`}</span>
                 <ExternalLink className="w-3-5 h-3-5" />
               </button>
             </div>
+          </div>
           </div>
         </div>
       </div>

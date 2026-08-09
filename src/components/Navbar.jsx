@@ -1,47 +1,21 @@
-import React, { useRef } from 'react';
-import { 
-  ShieldCheck, 
-  Lock, 
+<<<<<<< HEAD
+import React from 'react';
+import {
+  ShieldCheck,
+  Lock,
   LogOut,
-  Download, 
-  Upload, 
-  UserPlus 
+  Upload,
+  UserPlus
 } from 'lucide-react';
-import { exportDatabaseJSON, importDatabaseJSON } from '../services/db';
 
-export const Navbar = ({ onOpenAddModal, onLeadsImported, onLogout, totalCount }) => {
-  const fileInputRef = useRef(null);
-
+export const Navbar = ({ onOpenAddModal, onExportLeads, onLogout, totalCount }) => {
   const handleImportClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const content = event.target?.result;
-        if (typeof content === 'string') {
-          const updated = importDatabaseJSON(content);
-          onLeadsImported(updated);
-        }
-      } catch (err) {
-        alert('Security Alert: Failed to import file. The file format is unrecognized or corrupted.');
-      }
-    };
-    reader.readAsText(file);
+    alert('Import is disabled with Google Sheets backend. Please restore leads using the Google Sheet or add them through the app.');
   };
 
   return (
     <nav className="sticky top-0 z-50 glass-panel border-b px-6 py-3">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-        
-        {/* Brand Logo with Responsive Malnad Webs Badge */}
         <div className="flex items-center gap-3">
           <div className="navbar-logo-badge">
             <img 
@@ -66,37 +40,25 @@ export const Navbar = ({ onOpenAddModal, onLeadsImported, onLogout, totalCount }
           </div>
         </div>
 
-        {/* Action Controls & Encrypted Vault Backup */}
         <div className="flex items-center gap-3">
-          {/* Vault Export Button */}
           <button
-            onClick={exportDatabaseJSON}
+            onClick={onExportLeads}
             className="btn btn-secondary text-xs py-2 px-3 hidden md-flex items-center gap-1-5"
-            title="Export encrypted vault backup"
+            title="Export lead database as JSON"
           >
             <Lock className="w-3-5 h-3-5 text-amber-400" />
-            <span>Export Vault</span>
+            <span>Export Leads</span>
           </button>
 
-          {/* Vault Import Button */}
           <button
             onClick={handleImportClick}
             className="btn btn-secondary text-xs py-2 px-3 hidden md-flex items-center gap-1-5"
-            title="Import & decrypt vault backup"
+            title="Import is disabled for Google Sheets backend"
           >
             <Upload className="w-3-5 h-3-5 text-emerald-400" />
             <span>Import Vault</span>
           </button>
-          
-          <input 
-            type="file" 
-            ref={fileInputRef} 
-            onChange={handleFileChange} 
-            accept=".vault,.json" 
-            className="hidden" 
-          />
 
-          {/* Add Lead Primary CTA */}
           <button
             onClick={onOpenAddModal}
             className="btn btn-primary text-xs py-2 px-4 flex items-center gap-1-5"
@@ -105,7 +67,6 @@ export const Navbar = ({ onOpenAddModal, onLeadsImported, onLogout, totalCount }
             <span>Add Lead</span>
           </button>
 
-          {/* Logout Button */}
           <button
             onClick={onLogout}
             className="btn btn-secondary text-xs py-2 px-3 text-rose-400 hover:text-rose-300"
@@ -115,7 +76,6 @@ export const Navbar = ({ onOpenAddModal, onLeadsImported, onLogout, totalCount }
             <span className="hidden sm-block">Logout</span>
           </button>
         </div>
-
       </div>
     </nav>
   );

@@ -10,6 +10,8 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }) => {
     notes: ''
   });
   const [errors, setErrors] = useState({});
+  const [submitError, setSubmitError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
 
@@ -22,14 +24,23 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }) => {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
-    onAddLead(formData);
-    setFormData({ name: '', phone: '', location: '', mapsUrl: '', notes: '' });
-    setErrors({});
-    onClose();
+    setSubmitError('');
+    setIsSubmitting(true);
+
+    try {
+      await onAddLead(formData);
+      setFormData({ name: '', phone: '', location: '', mapsUrl: '', notes: '' });
+      setErrors({});
+      onClose();
+    } catch (error) {
+      setSubmitError(error?.message || 'Unable to save lead. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -38,7 +49,6 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }) => {
         className="modal-content border border-amber-500/30"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="flex justify-between items-center pb-4 mb-6 border-b border-white/10">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
@@ -58,9 +68,7 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }) => {
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Name */}
           <div>
             <label className="block text-xs font-bold text-gray-300 mb-1.5 uppercase tracking-wider">
               Lead Name <span className="text-amber-400">*</span>
@@ -78,7 +86,6 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }) => {
             {errors.name && <p className="text-rose-400 text-xs mt-1">{errors.name}</p>}
           </div>
 
-          {/* Phone */}
           <div>
             <label className="block text-xs font-bold text-gray-300 mb-1.5 uppercase tracking-wider">
               Phone Number <span className="text-amber-400">*</span>
@@ -96,7 +103,6 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }) => {
             {errors.phone && <p className="text-rose-400 text-xs mt-1">{errors.phone}</p>}
           </div>
 
-          {/* Location */}
           <div>
             <label className="block text-xs font-bold text-gray-300 mb-1.5 uppercase tracking-wider">
               Location City/Area <span className="text-amber-400">*</span>
@@ -114,7 +120,6 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }) => {
             {errors.location && <p className="text-rose-400 text-xs mt-1">{errors.location}</p>}
           </div>
 
-          {/* Maps Location */}
           <div>
             <label className="block text-xs font-bold text-gray-300 mb-1.5 uppercase tracking-wider">
               Google Maps Location Link (Optional)
@@ -131,7 +136,6 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }) => {
             </div>
           </div>
 
-          {/* Notes */}
           <div>
             <label className="block text-xs font-bold text-gray-300 mb-1.5 uppercase tracking-wider">
               Additional Notes (Optional)
@@ -148,20 +152,25 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }) => {
             </div>
           </div>
 
-          {/* Form Actions */}
+          {submitError && (
+            <div className="text-rose-400 text-xs mt-1">{submitError}</div>
+          )}
+
           <div className="pt-4 flex justify-end gap-3">
             <button
               type="button"
               onClick={onClose}
               className="btn btn-secondary"
+              disabled={isSubmitting}
             >
               Cancel
             </button>
             <button
               type="submit"
               className="btn btn-primary"
+              disabled={isSubmitting}
             >
-              <span>Save Lead</span>
+              <span>{isSubmitting ? 'Saving...' : 'Save Lead'}</span>
             </button>
           </div>
         </form>

@@ -22,7 +22,8 @@ export const LeadTable = ({
   onDeleteSectionLeads,
   onDeleteMultipleLeads,
   activeTab, 
-  setActiveTab 
+  setActiveTab,
+  isProcessing
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLeadIds, setSelectedLeadIds] = useState([]);
@@ -36,9 +37,10 @@ export const LeadTable = ({
   const filteredLeads = leads.filter((lead) => {
     const matchesTab = lead.status === activeTab;
     const search = searchTerm.toLowerCase();
+    const phoneString = String(lead.phone || '');
     const matchesSearch = 
       lead.name.toLowerCase().includes(search) ||
-      lead.phone.toLowerCase().includes(search) ||
+      phoneString.toLowerCase().includes(search) ||
       lead.location.toLowerCase().includes(search);
 
     return matchesTab && matchesSearch;
@@ -233,9 +235,119 @@ export const LeadTable = ({
 
                     {/* Phone */}
                     <td className="py-4 px-4">
+                      <a
+                        href={`tel:${String(lead.phone || '').replace(/[^0-9+]/g, '')}`}
+                        className="inline-flex items-center gap-1-5 text-sm text-gray-300 hover:text-amber-400 font-mono"
+                      >
+                        <Phone className="w-3-5 h-3-5 text-amber-400" />
+                        <span>{String(lead.phone || '')}</span>
+                      </a>
+                    </td>
+
+                    {/* Location */}
+                    <td className="py-4 px-4">
+                      <div className="flex items-center gap-1-5 text-sm text-gray-300">
+                        <MapPin className="w-3-5 h-3-5 text-emerald-400 flex-shrink-0" />
+                        <span>{lead.location}</span>
+                      </div>
+                      {lead.mapsUrl && (
+                        <a
+                          href={lead.mapsUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 text-11px text-amber-400 mt-0-5"
+                        >
+                          <span>View Maps</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
+                    </td>
+
+                    {/* Status & Details */}
+                    <td className="py-4 px-4">
+                      {lead.status === 'todo' ? (
+                        <div className="flex flex-col gap-1">
+                          <span className="badge badge-todo">
+                            <Clock className="w-3 h-3" /> To-Do
+                          </span>
+                          <div className="text-11px text-gray-400">
+                            Added {new Date(lead.createdAt).toLocaleDateString()}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col gap-1">
+                          <span className="badge badge-completed">
+                            <CheckCircle2 className="w-3 h-3" /> Sent & Done
+                          </span>
+                          {renderBrochureBadge(lead.selectedBrochure)}
+                          {lead.sentAt && (
+                            <div className="text-11px text-gray-400">
+                              Sent {new Date(lead.sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </td>
+
+                    {/* Actions */}
+                    <td className="py-4 px-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        {lead.status === 'todo' ? (
+                          <button
+                            onClick={() => onOpenSendMessage(lead)}
+                            className="btn btn-primary text-xs py-2 px-3-5"
+                            disabled={isProcessing}
+                          >
+                            <Send className="w-3-5 h-3-5" />
+                            <span>{isProcessing ? 'Please wait' : 'Publish / Send'}</span>
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => onOpenSendMessage(lead)}
+                            className="btn btn-secondary text-xs py-2 px-3"
+                            title="Resend Brochure"
+                            disabled={isProcessing}
+                          >
+                            <Send className="w-3-5 h-3-5 text-emerald-400" />
+                            <span>{isProcessing ? 'Please wait' : 'Resend'}</span>
+                          </button>
+                        )}
+                        <button
+                          onClick={() => onDeleteLead(lead.id)}
+                          className="btn btn-secondary text-xs p-2 text-rose-400"
+                          title="Delete Lead"
+                          disabled={isProcessing}
+                        >
+                          <Trash2 className="w-3-5 h-3-5 text-rose-400" />
+                        </button>
+                      </div>
+                    </td>
+
+<<<<<<< HEAD
+                    {/* Phone */}
+                    <td className="py-4 px-4">
                       <a 
                         href={`tel:${lead.phone}`}
                         className="inline-flex items-center gap-1-5 text-sm text-gray-300 hover:text-amber-400 font-mono"
+=======
+                      {lead.status === 'completed' && (
+                        <button
+                          onClick={() => onOpenSendMessage(lead)}
+                          className="btn btn-secondary text-xs py-2 px-3"
+                          title="Resend Brochure"
+                          disabled={isProcessing}
+                        >
+                          <Send className="w-3-5 h-3-5 text-emerald-400" />
+                          <span>{isProcessing ? 'Please wait' : 'Resend'}</span>
+                        </button>
+                      )}
+
+                      <button
+                        onClick={() => onDeleteLead(lead.id)}
+                        className="btn btn-secondary text-xs p-2 text-rose-400"
+                        title="Delete Lead"
+                        disabled={isProcessing}
+>>>>>>> d56e443 (Integrate Google Sheets backend and fix lead/WhatsApp handling)
                       >
                         <Phone className="w-3-5 h-3-5 text-amber-400" />
                         <span>{lead.phone}</span>
