@@ -158,12 +158,13 @@ export const SendMessageModal = ({ isOpen, onClose, lead, onSendComplete, onDele
                 className="btn btn-whatsapp"
                 disabled={isSending}
               >
-                <Send className="w-4 h-4" />
-                <span>{isSending ? 'Sending...' : `Send WhatsApp to ${lead.phone}`}</span>
-                <ExternalLink className="w-3-5 h-3-5" />
+                <>
+                  <Send className="w-4 h-4" />
+                  <span>{isSending ? 'Sending...' : `Send WhatsApp to ${lead.phone}`}</span>
+                  <ExternalLink className="w-3-5 h-3-5" />
+                </>
               </button>
             </div>
-          </div>
           </div>
         </div>
       </div>

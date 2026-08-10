@@ -323,34 +323,14 @@ export const LeadTable = ({
                       </div>
                     </td>
 
-<<<<<<< HEAD
                     {/* Phone */}
                     <td className="py-4 px-4">
                       <a 
                         href={`tel:${lead.phone}`}
                         className="inline-flex items-center gap-1-5 text-sm text-gray-300 hover:text-amber-400 font-mono"
-=======
-                      {lead.status === 'completed' && (
-                        <button
-                          onClick={() => onOpenSendMessage(lead)}
-                          className="btn btn-secondary text-xs py-2 px-3"
-                          title="Resend Brochure"
-                          disabled={isProcessing}
-                        >
-                          <Send className="w-3-5 h-3-5 text-emerald-400" />
-                          <span>{isProcessing ? 'Please wait' : 'Resend'}</span>
-                        </button>
-                      )}
-
-                      <button
-                        onClick={() => onDeleteLead(lead.id)}
-                        className="btn btn-secondary text-xs p-2 text-rose-400"
-                        title="Delete Lead"
-                        disabled={isProcessing}
->>>>>>> d56e443 (Integrate Google Sheets backend and fix lead/WhatsApp handling)
                       >
                         <Phone className="w-3-5 h-3-5 text-amber-400" />
-                        <span>{lead.phone}</span>
+                        <span>{String(lead.phone || '')}</span>
                       </a>
                     </td>
 
